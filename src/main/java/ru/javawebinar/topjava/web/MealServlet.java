@@ -21,7 +21,12 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
     private static final String INSERT_OR_EDIT = "/meal.jsp";
     private static final String LIST_MEAL = "/meals.jsp";
-    private final MealDao dao = new MealDaoMemory();
+    private MealDao dao;
+
+    @Override
+    public void init() {
+        dao = new MealDaoMemory();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -52,7 +57,7 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         request.setCharacterEncoding("UTF-8");
         LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
