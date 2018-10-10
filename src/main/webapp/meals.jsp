@@ -14,19 +14,14 @@
             <th>Дата/Время</th>
             <th>Описание</th>
             <th>Калории</th>
-            <th>ID</th>
             <th>Редактировать</th>
             <th>Удалить</th>
         </tr>
             <c:forEach items="${meals}" var="meal">
                 <tr style = "${meal.exceed ? 'color:red' : 'color:green'}">
-                    <%--
-                    <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${localDateTimeFormat.parse(meal.dateTime)}" /></td>
-                    --%>
-                    <td>${f:formatLocalDateTime(meal.dateTime, 'yyyy-MM-dd HH:mm')}</td>
+                    <td>${f:formatLocalDateTime(meal.dateTime)}</td>
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
-                    <td>${meal.id}</td>
                     <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Редактировать</a></td>
                     <td><a href="meals?action=remove&id=<c:out value="${meal.id}"/>">Удалить</a></td>
                 </tr>
