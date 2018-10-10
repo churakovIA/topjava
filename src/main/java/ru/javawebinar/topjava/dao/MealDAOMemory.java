@@ -5,42 +5,36 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealDAOMemory implements MealDAO {
+public class MealDaoMemory implements MealDao {
 
     private static AtomicInteger mealCounter = new AtomicInteger(0);
-    private final static Map<Integer, Meal> mealsMap;
+    private final static Map<Integer, Meal> mealsMap = new ConcurrentHashMap<>();
 
-    static {
-        mealsMap = new ConcurrentHashMap<Integer, Meal>(){{
-            List<Meal> meals = Arrays.asList(
-                    new Meal(1, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
-                    new Meal(2, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
-                    new Meal(3, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
-                    new Meal(4, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
-                    new Meal(5, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-                    new Meal(6, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
-            );
-            meals.forEach(meal -> put(meal.getId(), meal));
-            mealCounter.set(meals.size());
-        }};
+    public MealDaoMemory() {
+        add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+        add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
+        add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
+        add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
+        add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
+        add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
     }
 
     @Override
     public List<Meal> list() {
-        return new ArrayList(mealsMap.values());
+        return new ArrayList<>(mealsMap.values());
     }
 
     @Override
-    public void add(Meal m) {
+    public Meal add(Meal m) {
         int id = mealCounter.incrementAndGet();
         Meal meal = new Meal(id, m.getDateTime(), m.getDescription(), m.getCalories());
         mealsMap.put(id, meal);
+        return meal;
     }
 
     @Override
@@ -49,8 +43,9 @@ public class MealDAOMemory implements MealDAO {
     }
 
     @Override
-    public void update(Meal m) {
-        mealsMap.replace(m.getId(), m);
+    public Meal update(Meal m) {
+        mealsMap.computeIfPresent(m.getId(), (k,v)->m);
+        return m;
     }
 
     @Override
