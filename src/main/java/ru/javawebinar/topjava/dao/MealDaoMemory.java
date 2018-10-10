@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MealDaoMemory implements MealDao {
 
     private static AtomicInteger mealCounter = new AtomicInteger(0);
-    private final static Map<Integer, Meal> mealsMap = new ConcurrentHashMap<Integer, Meal>();
+    private final static Map<Integer, Meal> mealsMap = new ConcurrentHashMap<>();
 
     public MealDaoMemory() {
         add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
