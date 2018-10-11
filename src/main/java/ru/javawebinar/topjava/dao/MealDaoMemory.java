@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealDaoMemory implements MealDao {
 
-    private static AtomicInteger mealCounter = new AtomicInteger(0);
-    private final static Map<Integer, Meal> mealsMap = new ConcurrentHashMap<>();
+    private AtomicInteger mealCounter = new AtomicInteger(0);
+    private final Map<Integer, Meal> mealsMap = new ConcurrentHashMap<>();
 
     public MealDaoMemory() {
         add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
@@ -44,7 +44,7 @@ public class MealDaoMemory implements MealDao {
 
     @Override
     public Meal update(Meal m) {
-        mealsMap.computeIfPresent(m.getId(), (k,v)->m);
+        mealsMap.computeIfPresent(m.getId(), (k, v) -> m);
         return m;
     }
 

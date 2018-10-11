@@ -31,28 +31,36 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String forward="";
+        String forward = "";
         String action = request.getParameter("action");
+        if (action == null) action = "";
+        int mealID;
 
-        if ("remove".equalsIgnoreCase(action)){
-            int mealID = Integer.parseInt(request.getParameter("id"));
-            dao.remove(mealID);
-        } else if ("edit".equalsIgnoreCase(action)){
-            forward = INSERT_OR_EDIT;
-            int mealID = Integer.parseInt(request.getParameter("id"));
-            Meal meal = dao.getById(mealID);
-            request.setAttribute("meal", meal);
-        } else if ("insert".equalsIgnoreCase(action)){
-            forward = INSERT_OR_EDIT;
-        } else{
-            forward = LIST_MEAL;
-            request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(dao.list(), LocalTime.MIN, LocalTime.MAX, 2000));
+        switch (action) {
+            case "remove":
+                mealID = Integer.parseInt(request.getParameter("id"));
+                dao.remove(mealID);
+                break;
+            case "edit":
+                forward = INSERT_OR_EDIT;
+                mealID = Integer.parseInt(request.getParameter("id"));
+                Meal meal = dao.getById(mealID);
+                request.setAttribute("meal", meal);
+                break;
+            case "insert":
+                forward = INSERT_OR_EDIT;
+                break;
+            default:
+                forward = LIST_MEAL;
+                request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(dao.list(), LocalTime.MIN, LocalTime.MAX, 2000));
         }
-        if (forward.length()==0){
+        if (forward.length() == 0) {
+            log.debug("redirect to meals");
             response.sendRedirect("meals");
-        }else {
-        RequestDispatcher view = request.getRequestDispatcher(forward);
-        view.forward(request, response);
+        } else {
+            log.debug(String.format("forvard to %s", forward));
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
         }
     }
 
@@ -64,14 +72,14 @@ public class MealServlet extends HttpServlet {
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
         String mealID = request.getParameter("id");
-        if(mealID == null || mealID.isEmpty()){
+        if (mealID == null || mealID.isEmpty()) {
             Meal meal = new Meal(dateTime, description, calories);
             dao.add(meal);
-        }
-        else{
+        } else {
             Meal meal = new Meal(Integer.parseInt(mealID), dateTime, description, calories);
             dao.update(meal);
         }
+        log.debug("redirect to meals");
         response.sendRedirect("meals");
     }
 }
