@@ -16,7 +16,7 @@ public interface MealService {
 
     Meal get(int userId, int id) throws NotFoundException;
 
-    void update(Meal meal);
+    void update(int userId, Meal meal);
 
     List<MealWithExceed> getAll(int userId, int caloriesPerDay);
 

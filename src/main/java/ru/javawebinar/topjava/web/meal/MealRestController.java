@@ -24,17 +24,17 @@ public class MealRestController {
     @Autowired
     private MealService service;
 
-    public List<MealWithExceed> getByDateTime(String startTime, String endTime, String startDate, String endDate) {
+    public List<MealWithExceed> getByDateTime(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         log.info("getByDateTime with " +
                 "startTime {}" +
                 "endTime {}" +
                 "startDate {}" +
                 "endDate {}", startTime, endTime, startDate, endDate);
 
-        return service.getByDateTime(startTime.length() == 0 ? LocalTime.MIN : LocalTime.parse(startTime),
-                endTime.length() == 0 ? LocalTime.MAX : LocalTime.parse(endTime),
-                startDate.length() == 0 ? LocalDate.MIN : LocalDate.parse(startDate),
-                endDate.length() == 0 ? LocalDate.MAX : LocalDate.parse(endDate),
+        return service.getByDateTime(startTime == null ? LocalTime.MIN : startTime,
+                endTime == null ? LocalTime.MAX : endTime,
+                startDate == null ? LocalDate.MIN : startDate,
+                endDate == null ? LocalDate.MAX : endDate,
                 authUserId(), authUserCaloriesPerDay());
     }
 
@@ -46,13 +46,13 @@ public class MealRestController {
     public void create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        service.update(meal);
+        service.create(authUserId(), meal);
     }
 
     public void update(Meal meal, int id) {
         log.info("save {}", meal);
         assureIdConsistent(meal, id);
-        service.update(meal);
+        service.update(authUserId(), meal);
     }
 
     public void delete(int id) {

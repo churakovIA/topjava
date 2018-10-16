@@ -31,11 +31,11 @@
                 <td width="100">До времени</td>
             </tr>
             <tr>
-                <td><input type="date" value="${startDate}" name="startDate"></td>
-                <td><input type="date" value="${endDate}" name="endDate"></td>
+                <td><input type="date" value="startDate" name="startDate"></td>
+                <td><input type="date" value="endDate" name="endDate"></td>
                 <td></td>
-                <td><input type="time" value="${startTime}" name="startTime"></td>
-                <td><input type="time" value="${endTime}" name="endTime"></td>
+                <td><input type="time" value="startTime" name="startTime"></td>
+                <td><input type="time" value="endTime" name="endTime"></td>
             </tr>
             <tr/>
             <tr>

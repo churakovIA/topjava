@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -13,7 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -28,6 +31,7 @@ public class MealServlet extends HttpServlet {
         super.init(config);
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         controller = appCtx.getBean(MealRestController.class);
+        MealsUtil.MEALS.forEach(controller::create);
     }
 
     @Override
@@ -41,11 +45,15 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String nameCommand = request.getParameter("action");
         if (nameCommand != null && "filter".equals(nameCommand)) {
+            String startTime = request.getParameter("startTime");
+            String endTime = request.getParameter("endTime");
+            String startDate = request.getParameter("startDate");
+            String endDate = request.getParameter("endDate");
             request.setAttribute("meals", controller.getByDateTime(
-                    request.getParameter("startTime"),
-                    request.getParameter("endTime"),
-                    request.getParameter("startDate"),
-                    request.getParameter("endDate")
+                    startTime == null || startTime.isEmpty() ? null : LocalTime.parse(startTime),
+                    endTime == null || endTime.isEmpty() ? null : LocalTime.parse(endTime),
+                    startDate == null || startDate.isEmpty() ? null : LocalDate.parse(startDate),
+                    endDate == null || endDate.isEmpty() ? null : LocalDate.parse(endDate)
             ));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         } else {
@@ -55,7 +63,7 @@ public class MealServlet extends HttpServlet {
                     LocalDateTime.parse(request.getParameter("dateTime")),
                     request.getParameter("description"),
                     Integer.parseInt(request.getParameter("calories")),
-                    SecurityUtil.authUserId());
+                    null);
 
             log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
             if (meal.isNew())
