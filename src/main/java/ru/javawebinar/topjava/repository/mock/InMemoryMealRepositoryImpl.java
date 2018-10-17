@@ -8,8 +8,8 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,14 +34,14 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         }
         // treat case: update, but absent in storage
         Map<Integer, Meal> mealMap = repository.get(userId);
-        return mealMap == null ? null : mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> oldMeal.getUserId() == userId ? meal : oldMeal);
+        return mealMap == null ? null : mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int userId, int id) {
         log.info("delete userId {}, id {}", userId, id);
         Map<Integer, Meal> mealMap = repository.get(userId);
-        return mealMap != null && mealMap.containsKey(id) ? mealMap.remove(id) != null : false;
+        return mealMap != null && mealMap.remove(id) != null;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         log.info("getAll userId {}", userId);
-        return getList(userId);
+        return getList(userId, x -> true);
     }
 
     @Override
@@ -63,13 +63,9 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         return getList(userId, meal -> DateTimeUtil.isBetween(meal.getDate(), startDate, endDate));
     }
 
-    private Collection<Meal> getList(int userId) {
-        return getList(userId, x -> true);
-    }
-
     private Collection<Meal> getList(int userId, Predicate<Meal> filter) {
         Map<Integer, Meal> mealMap = repository.get(userId);
-        return mealMap == null ? new ArrayList<>() : mealMap.values().stream()
+        return mealMap == null ? Collections.emptyList() : mealMap.values().stream()
                 .filter(filter.and(meal -> meal.getUserId() == userId))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());

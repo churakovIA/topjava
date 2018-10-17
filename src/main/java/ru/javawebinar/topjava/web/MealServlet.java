@@ -44,7 +44,7 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String nameCommand = request.getParameter("action");
-        if (nameCommand != null && "filter".equals(nameCommand)) {
+        if ("filter".equals(nameCommand)) {
             String startTime = request.getParameter("startTime");
             String endTime = request.getParameter("endTime");
             String startDate = request.getParameter("startDate");
