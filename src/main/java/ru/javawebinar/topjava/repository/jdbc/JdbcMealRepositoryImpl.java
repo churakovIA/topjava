@@ -47,7 +47,9 @@ public class JdbcMealRepositoryImpl implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET description=:description, dateTime=:dateTime, calories=:calories, user_id=:user_id WHERE id=:id and user_id=:user_id", map) == 0) {
+                "UPDATE meals " +
+                        "SET description=:description, dateTime=:dateTime, calories=:calories, user_id=:user_id " +
+                        "WHERE id=:id and user_id=:user_id", map) == 0) {
             return null;
         }
         return meal;
@@ -71,6 +73,8 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND datetime between ? and ? ORDER BY datetime DESC", ROW_MAPPER, userId, startDate, endDate);
+        return jdbcTemplate.query("SELECT * FROM meals " +
+                "WHERE user_id=? AND datetime between ? and ? " +
+                "ORDER BY datetime DESC", ROW_MAPPER, userId, startDate, endDate);
     }
 }

@@ -29,7 +29,7 @@ CREATE TABLE meals
   id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
   user_id     INTEGER                 NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   calories    INTEGER                 NOT NULL,
-  description VARCHAR,
+  description VARCHAR                 NOT NULL,
   dateTime    TIMESTAMP DEFAULT now() NOT NULL
 );
 CREATE UNIQUE INDEX meals_unique_dateTime_idx ON meals(user_id, dateTime);

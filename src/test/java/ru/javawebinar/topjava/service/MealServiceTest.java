@@ -9,16 +9,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.Util;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 
@@ -35,51 +30,53 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal actual = service.get(MEAL_ID, USER_ID);
-        assertMatch(actual, MEAL);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void getNotFound() {
-        Meal actual = service.get(MEAL_ID, ADMIN_ID);
-        assertMatch(actual, MEAL);
+        Meal actual = service.get(USER_MEAL_100002_ID, USER_ID);
+        assertMatch(actual, USER_MEAL_100002);
     }
 
     @Test
     public void delete() {
-        service.delete(MEAL_ID, USER_ID);
-        assertMatch(service.getAll(USER_ID), MEALS.subList(1, MEALS.size()));
+        service.delete(ADMIN_MEAL_100008_ID, ADMIN_ID);
+        assertMatch(service.getAll(ADMIN_ID), ADMIN_MEAL_100009);
     }
 
     @Test(expected = NotFoundException.class)
     public void deletedNotFound() {
-        service.delete(MEAL_ID, ADMIN_ID);
+        service.delete(USER_MEAL_100002_ID, ADMIN_ID);
     }
 
     @Test
     public void getBetweenDates() {
         final LocalDate start = LocalDate.of(2015, Month.MAY, 30);
         final LocalDate end = LocalDate.of(2015, Month.MAY, 30);
-        List<Meal> expected = MEALS.stream().filter(m -> Util.isBetween(m.getDateTime(), LocalDateTime.of(start, LocalTime.MIN), LocalDateTime.of(end, LocalTime.MAX))).collect(Collectors.toList());
-        assertMatch(service.getBetweenDates(start, end, USER_ID), expected);
+        assertMatch(service.getBetweenDates(start, end, USER_ID),
+                USER_MEAL_100004,
+                USER_MEAL_100003,
+                USER_MEAL_100002
+        );
     }
 
     @Test
     public void getBetweenDateTimes() {
         final LocalDateTime start = LocalDateTime.of(2015, Month.MAY, 30, 20, 0);
         final LocalDateTime end = LocalDateTime.of(2015, Month.MAY, 31, 10, 0);
-        List<Meal> expected = MEALS.stream().filter(m -> Util.isBetween(m.getDateTime(), start, end)).collect(Collectors.toList());
-        assertMatch(service.getBetweenDateTimes(start, end, USER_ID), expected);
+        assertMatch(service.getBetweenDateTimes(start, end, USER_ID),
+                USER_MEAL_100005,
+                USER_MEAL_100004
+        );
     }
 
     @Test
     public void getAll() {
-        assertMatch(service.getAll(USER_ID), MEALS);
+        assertMatch(service.getAll(ADMIN_ID),
+                ADMIN_MEAL_100009,
+                ADMIN_MEAL_100008
+        );
     }
 
     @Test
     public void update() {
-        Meal updateMeal = new Meal(MEAL);
+        Meal updateMeal = new Meal(USER_MEAL_100002);
         updateMeal.setDescription("asxasxsx");
         updateMeal.setCalories(777);
         service.update(updateMeal, USER_ID);
@@ -88,7 +85,7 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void updateNotFound() {
-        Meal updateMeal = new Meal(MEAL);
+        Meal updateMeal = new Meal(USER_MEAL_100002);
         updateMeal.setDescription("asxasxsx");
         updateMeal.setCalories(777);
         service.update(updateMeal, ADMIN_ID);
@@ -98,12 +95,14 @@ public class MealServiceTest {
     @Test
     public void create() {
         Meal newMeal = new Meal(LocalDateTime.of(2018, Month.MAY, 30, 10, 0), "Завтрак", 500);
-        Meal meal = service.create(newMeal, USER_ID);
+        Meal meal = service.create(newMeal, ADMIN_ID);
         newMeal.setId(meal.getId());
-        ArrayList<Meal> meals = new ArrayList<Meal>(MEALS) {{
-            add(0, newMeal);
-        }};
-        assertMatch(service.getAll(USER_ID), meals);
+        assertMatch(service.getAll(ADMIN_ID),
+                newMeal,
+                ADMIN_MEAL_100009,
+                ADMIN_MEAL_100008
+        );
+        assertMatch(meal, newMeal);
     }
 
     @Test(expected = DataAccessException.class)
