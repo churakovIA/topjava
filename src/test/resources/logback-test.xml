@@ -19,4 +19,33 @@
         <appender-ref ref="console"/>
     </root>
 
+    <logger name="ru.javawebinar.topjava.service.MealServiceTest" level="info" additivity = "false">
+        <appender name="MealServiceTest" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%boldBlue(%d{HH:mm:ss.SSS} %msg%n)</pattern>
+            </encoder>
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                    <marker>DURATION_TEST_MARKER</marker>
+                </evaluator>
+                <OnMatch>ACCEPT</OnMatch>
+                <OnMismatch>DENY</OnMismatch>
+            </filter>
+        </appender>
+        <appender name="MealServiceTest1" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <charset>UTF-8</charset>
+                <pattern>%red(-----------------------------%n%msg-----------------------------%n)</pattern>
+            </encoder>
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                    <marker>DURATION_TOTAL_MARKER</marker>
+                </evaluator>
+                <OnMatch>ACCEPT</OnMatch>
+                <OnMismatch>DENY</OnMismatch>
+            </filter>
+        </appender>
+    </logger>
+
 </configuration>

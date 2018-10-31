@@ -9,6 +9,8 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,6 +36,9 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Marker DURATION_TEST_MARKER = MarkerFactory.getMarker("DURATION_TEST_MARKER");
+    private static final Marker DURATION_TOTAL_MARKER = MarkerFactory.getMarker("DURATION_TOTAL_MARKER");
+
     static {
         SLF4JBridgeHandler.install();
     }
@@ -41,12 +46,12 @@ public class MealServiceTest {
     @Autowired
     private MealService service;
 
-    private final static Logger LOG = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MealServiceTest.class);
 
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
 
-    private final static StringBuilder SB = new StringBuilder();
+    private static final StringBuilder SB = new StringBuilder();
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
@@ -54,14 +59,14 @@ public class MealServiceTest {
         protected void finished(long nanos, Description description) {
             long ms = stopwatch.runtime(TimeUnit.MILLISECONDS);
             String methodName = description.getMethodName();
-            LOG.info(String.format("%s finished, time taken %s ms", methodName, ms));
+            LOG.info(DURATION_TEST_MARKER, "{} finished, time taken {} ms", methodName, ms);
             SB.append(String.format("%-15s %10s ms\n", methodName, ms));
         }
     };
 
     @AfterClass
     public static void runAfterClass() {
-        LOG.info(String.format("\n%1$s\n%2$s%1$s", "-----------------------------", SB.toString()));
+        LOG.info(DURATION_TOTAL_MARKER, SB.toString());
     }
 
     @Test
