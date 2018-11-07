@@ -18,6 +18,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     Optional<Meal> findById(Integer integer);
 
     @Override
+    @Transactional
     Meal save(Meal meal);
 
     @Transactional
@@ -29,5 +30,5 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     List<Meal> getAll(@Param("user_id") int userId);
 
     @Query("FROM Meal m WHERE m.user.id=:user_id AND m.dateTime BETWEEN :startDate AND :endDate  ORDER BY m.dateTime desc")
-    List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId);
+    List<Meal> getBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("user_id") int userId);
 }
