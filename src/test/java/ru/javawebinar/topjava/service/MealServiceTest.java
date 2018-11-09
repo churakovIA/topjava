@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.MealTestData.assertMatch;
+import static ru.javawebinar.topjava.UserTestData.*;
 
 public abstract class MealServiceTest extends AbstractServiceTest {
 
@@ -40,6 +40,13 @@ public abstract class MealServiceTest extends AbstractServiceTest {
     public void get() throws Exception {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         assertMatch(actual, ADMIN_MEAL1);
+    }
+
+    @Test
+    public void getWithUser() throws Exception {
+        Meal actual = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
+        assertMatch(actual, ADMIN_MEAL1);
+        ru.javawebinar.topjava.UserTestData.assertMatch(actual.getUser(), ADMIN);
     }
 
     @Test

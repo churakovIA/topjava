@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 public abstract class UserServiceTest extends AbstractServiceTest {
@@ -82,5 +83,12 @@ public abstract class UserServiceTest extends AbstractServiceTest {
     public void getAll() throws Exception {
         List<User> all = service.getAll();
         assertMatch(all, ADMIN, USER);
+    }
+
+    @Test
+    public void getWithMeals() {
+        User user = service.getWithMeals(USER_ID);
+        assertMatch(user, USER);
+        assertThat(user.getMeals()).isNotNull().isNotEmpty();
     }
 }

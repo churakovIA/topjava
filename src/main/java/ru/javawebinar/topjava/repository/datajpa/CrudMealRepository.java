@@ -17,6 +17,9 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Override
     Optional<Meal> findById(Integer integer);
 
+    @Query("FROM Meal m JOIN FETCH m.user WHERE m.id =:id and m.user.id =:user_id")
+    Optional<Meal> findByIdAndFetchUserEagerly(@Param("id") int id, @Param("user_id") int userId);
+
     @Override
     @Transactional
     Meal save(Meal meal);
