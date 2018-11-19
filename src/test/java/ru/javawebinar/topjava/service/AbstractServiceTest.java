@@ -50,4 +50,10 @@ abstract public class AbstractServiceTest {
             Assert.assertThat(getRootCause(e), instanceOf(exceptionClass));
         }
     }
+//    @Autowired
+//    private Environment environment;
+//
+//    protected boolean isProfileActive(String profile){
+//        return Arrays.stream(environment.getActiveProfiles()).anyMatch(profile::equalsIgnoreCase);
+//    }
 }
