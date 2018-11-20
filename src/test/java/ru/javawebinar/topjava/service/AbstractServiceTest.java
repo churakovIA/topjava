@@ -1,20 +1,23 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
+
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
@@ -50,10 +53,16 @@ abstract public class AbstractServiceTest {
             Assert.assertThat(getRootCause(e), instanceOf(exceptionClass));
         }
     }
-//    @Autowired
-//    private Environment environment;
-//
-//    protected boolean isProfileActive(String profile){
-//        return Arrays.stream(environment.getActiveProfiles()).anyMatch(profile::equalsIgnoreCase);
-//    }
+
+    @Autowired
+    private Environment environment;
+
+    protected boolean isProfileActive(String profile) {
+        return Arrays.stream(environment.getActiveProfiles()).anyMatch(profile::equalsIgnoreCase);
+    }
+
+    @Test
+    public void testValidation() throws Exception {
+        Assume.assumeTrue(!isProfileActive(Profiles.JDBC));
+    }
 }

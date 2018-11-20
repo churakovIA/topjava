@@ -49,12 +49,14 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            saveRoles(user.getId(), new ArrayList(user.getRoles()));
         } else if (namedParameterJdbcTemplate.update(
                 "UPDATE users SET name=:name, email=:email, password=:password, " +
                         "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
             return null;
+        } else {
+            jdbcTemplate.update("DELETE from user_roles WHERE user_id=?", user.getId());
         }
+        saveRoles(user.getId(), new ArrayList(user.getRoles()));
         return user;
     }
 
@@ -68,7 +70,9 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
         User user = DataAccessUtils.singleResult(users);
-        if (user != null) user.setRoles(getRoles(id));
+        if (user != null) {
+            user.setRoles(getRoles(id));
+        }
         return user;
     }
 
@@ -76,7 +80,9 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     public User getByEmail(String email) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         User user = DataAccessUtils.singleResult(users);
-        user.setRoles(getRoles(user.getId()));
+        if (user != null) {
+            user.setRoles(getRoles(user.getId()));
+        }
         return user;
     }
 
@@ -120,7 +126,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         return jdbcTemplate.query("SELECT * FROM user_roles WHERE user_id=?", new Object[]{id}, new ResultSetExtractor<Collection<Role>>() {
                     @Override
                     public Collection<Role> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                        Collection<Role> roles = new HashSet<>();
+                        EnumSet<Role> roles = EnumSet.noneOf(Role.class);
                         while (rs.next()) {
                             roles.add(Role.valueOf(rs.getString(2)));
                         }
@@ -130,7 +136,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         );
     }
 
-    private int[] saveRoles(Integer id, List<Role> roles) {
+    private void saveRoles(Integer id, List<Role> roles) {
 
         String sql = "insert into user_roles(role, user_id) values (?, ?)";
 
@@ -148,7 +154,6 @@ public class JdbcUserRepositoryImpl implements UserRepository {
             }
 
         });
-        return updateCounts;
     }
 
 }
