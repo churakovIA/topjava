@@ -7,12 +7,7 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <c:if test = "${action != 'create'}">
-        <h2><spring:message code="meal.edit"/></h2>
-    </c:if>
-    <c:if test = "${action == 'create'}">
-        <h2><spring:message code="meal.create"/></h2>
-    </c:if>
+    <h2><spring:message code="${meal.isNew() ? 'meal.create' : 'meal.edit'}"/></h2>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="/meals/save">
