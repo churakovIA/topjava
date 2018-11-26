@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     // DataBase doesn't support LocalDate.MIN/MAX
     public static final LocalDate MIN_DATE = LocalDate.of(1, 1, 1);
@@ -28,4 +30,14 @@ public class DateTimeUtil {
     public static LocalTime parseLocalTime(String str) {
         return StringUtils.isEmpty(str) ? null : LocalTime.parse(str);
     }
+
+    public static String toString(LocalDate ldt) {
+        return ldt == null ? "" : ldt.format(DATE_FORMATTER);
+    }
+
+    public static String toString(LocalTime ldt) {
+        return ldt == null ? "" : ldt.format(TIME_FORMATTER);
+    }
+
+
 }

@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import ru.javawebinar.topjava.TestUtil;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
@@ -23,7 +24,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 mockMvc.perform(get(REST_URL))
                         .andExpect(status().isOk())
                         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                        .andExpect(contentJson(USER))
+                        .andExpect(TestUtil.contentJson(USER, UserTestData.IGNORE_PROPS))
         );
     }
 

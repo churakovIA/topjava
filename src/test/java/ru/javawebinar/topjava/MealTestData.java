@@ -43,4 +43,7 @@ public class MealTestData {
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
     }
+
+    public static final String IGNORE_PROPS = "user";
+
 }
