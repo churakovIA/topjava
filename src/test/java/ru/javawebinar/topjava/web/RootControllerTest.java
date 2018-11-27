@@ -1,13 +1,18 @@
 package ru.javawebinar.topjava.web;
 
+import org.assertj.core.matcher.AssertionMatcher;
 import org.junit.jupiter.api.Test;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.javawebinar.topjava.MealTestData.MEAL1;
-import static ru.javawebinar.topjava.MealTestData.MEAL1_ID;
+import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
@@ -36,6 +41,13 @@ class RootControllerTest extends AbstractControllerTest {
                 .andExpect(view().name("meals"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
                 .andExpect(model().attribute("meals", hasSize(6)))
+                .andExpect(model().attribute("meals", new AssertionMatcher<List<MealTo>>() {
+                    @Override
+                    public void assertion(List<MealTo> actual) throws AssertionError {
+                        List<MealTo> expected = MealsUtil.getWithExcess(MEALS, MealsUtil.DEFAULT_CALORIES_PER_DAY);
+                        assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
+                    }
+                }))
                 .andExpect(model().attribute("meals", hasItem(
                         allOf(
                                 hasProperty("id", is(MEAL1_ID)),
@@ -43,12 +55,5 @@ class RootControllerTest extends AbstractControllerTest {
                                 hasProperty("calories", is(MEAL1.getCalories()))
                         )
                 )));
-    }
-
-    @Test
-    void testStyleCss() throws Exception {
-        mockMvc.perform(get("/resources/css/style.css"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/css"));
     }
 }

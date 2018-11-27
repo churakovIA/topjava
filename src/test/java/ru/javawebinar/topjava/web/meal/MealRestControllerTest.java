@@ -7,8 +7,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,7 +35,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         TestUtil.print(mockMvc.perform(get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEALS, IGNORE_PROPS))
+                .andExpect(contentJson(MealsUtil.getWithExcess(MEALS, MealsUtil.DEFAULT_CALORIES_PER_DAY), IGNORE_PROPS))
         );
     }
 
@@ -79,22 +83,24 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetBetweenDateTime() throws Exception {
+        List<MealTo> withExcess = MealsUtil.getWithExcess(List.of(MEAL3, MEAL2, MEAL1), MealsUtil.DEFAULT_CALORIES_PER_DAY);
         TestUtil.print(mockMvc.perform(get(REST_URL+"filterDateTime?start=2015-05-30T00:00:00&end=2015-05-30T23:59:59"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(IGNORE_PROPS, MEAL3, MEAL2, MEAL1))
+                .andExpect(contentJson(withExcess, IGNORE_PROPS))
         );
     }
 
     @Test
     void testGetBetween() throws Exception {
+        List<MealTo> withExcess = MealsUtil.getWithExcess(List.of(MEAL3, MEAL2, MEAL1), MealsUtil.DEFAULT_CALORIES_PER_DAY);
         String params = "?startDate=2015-05-30&endDate=2015-05-30&startTime=&endTime=";
         TestUtil.print(mockMvc.perform(get(REST_URL+"filter" + params))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(IGNORE_PROPS, MEAL3, MEAL2, MEAL1))
+                .andExpect(contentJson(withExcess, IGNORE_PROPS))
         );
     }
 }
