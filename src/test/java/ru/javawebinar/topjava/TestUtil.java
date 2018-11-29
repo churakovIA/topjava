@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static ru.javawebinar.topjava.web.json.JsonUtil.writeIgnoreProps;
+import static ru.javawebinar.topjava.web.json.JsonUtil.writeValue;
 
 public class TestUtil {
 
@@ -36,5 +37,9 @@ public class TestUtil {
 
     public static <T> ResultMatcher contentJson(T expected, String ignoreProps) {
         return content().json(writeIgnoreProps(expected, ignoreProps));
+    }
+
+    public static <T> ResultMatcher contentJson(Collection<T> expected) {
+        return content().json(writeValue(expected));
     }
 }

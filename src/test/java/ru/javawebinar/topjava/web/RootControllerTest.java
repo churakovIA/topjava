@@ -36,6 +36,7 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void testMeals() throws Exception {
+        final List<MealTo> expected = MealsUtil.getWithExcess(MEALS, MealsUtil.DEFAULT_CALORIES_PER_DAY);
         mockMvc.perform(get("/meals"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
@@ -44,10 +45,10 @@ class RootControllerTest extends AbstractControllerTest {
                 .andExpect(model().attribute("meals", new AssertionMatcher<List<MealTo>>() {
                     @Override
                     public void assertion(List<MealTo> actual) throws AssertionError {
-                        List<MealTo> expected = MealsUtil.getWithExcess(MEALS, MealsUtil.DEFAULT_CALORIES_PER_DAY);
-                        assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
+                        assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
                     }
                 }))
+                .andExpect(model().attribute("meals", equalTo(expected))) //need override equals(), hashCode() for MealTo
                 .andExpect(model().attribute("meals", hasItem(
                         allOf(
                                 hasProperty("id", is(MEAL1_ID)),
