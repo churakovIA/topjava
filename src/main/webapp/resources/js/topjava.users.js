@@ -1,6 +1,21 @@
 const ajaxUrl = "ajax/admin/users/";
 let datatableApi;
 
+function enable(chkbox, id) {
+    const enabled = chkbox.is(":checked");
+//  https://stackoverflow.com/a/22213543/548473
+    $.ajax({
+        url: ajaxUrl + id,
+        type: "POST",
+        data: "enabled=" + enabled
+    }).done(function () {
+        chkbox.closest("tr").attr("data-userEnabled", enabled);
+        successNoty(enabled ? "Запись активирована" : "Запись деактивирована");
+    }).fail(function () {
+        $(chkbox).prop("checked", !enabled);
+    });
+}
+
 // $(document).ready(function () {
 $(function () {
     datatableApi = $("#datatable").DataTable({
