@@ -24,12 +24,16 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(ajaxUrl, function (data) {
-        datatableApi.clear().rows.add(data).draw();
+        drawTable(data);
     });
 }
 
-function updateTableByData(data) {
+function drawTable(data) {
     datatableApi.clear().rows.add(data).draw();
+}
+
+function updateTableByData(data) {
+    drawTable(data);
 }
 
 function save() {
