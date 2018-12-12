@@ -64,12 +64,17 @@ public class ValidationUtil {
         StringJoiner joiner = new StringJoiner("<br>");
         fieldErrors.forEach(
                 fe -> {
-                    String msg = fe.getDefaultMessage();
-                    if (msg != null) {
-                        if (!msg.startsWith(fe.getField())) {
-                            msg = fe.getField() + ' ' + msg;
+                    Object value = fe.getRejectedValue();
+                    if (fe.getField().equals("calories") && value instanceof String && ((String) value).length() == 0) {
+                        joiner.add("calories должно быть задано");
+                    } else {
+                        String msg = fe.getDefaultMessage();
+                        if (msg != null) {
+                            if (!msg.startsWith(fe.getField())) {
+                                msg = fe.getField() + ' ' + msg;
+                            }
+                            joiner.add(msg);
                         }
-                        joiner.add(msg);
                     }
                 });
         return new ResponseEntity<>(joiner.toString(), HttpStatus.UNPROCESSABLE_ENTITY);

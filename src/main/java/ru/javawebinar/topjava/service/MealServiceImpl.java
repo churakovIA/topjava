@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -52,11 +51,9 @@ public class MealServiceImpl implements MealService {
         checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
-    @Transactional
     @Override
     public void update(MealInTo mealTo, int userId) {
-        Meal meal = get(mealTo.getId(), userId);
-        repository.save(MealsUtil.updateFromTo(meal, mealTo), userId);
+        repository.save(MealsUtil.createNewFromTo(mealTo), userId);
     }
 
     @Override
