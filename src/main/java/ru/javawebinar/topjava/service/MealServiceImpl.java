@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.to.MealInTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDateTime;
@@ -54,7 +54,7 @@ public class MealServiceImpl implements MealService {
 
     @Transactional
     @Override
-    public void update(MealTo mealTo, int userId) {
+    public void update(MealInTo mealTo, int userId) {
         Meal meal = get(mealTo.getId(), userId);
         repository.save(MealsUtil.updateFromTo(meal, mealTo), userId);
     }

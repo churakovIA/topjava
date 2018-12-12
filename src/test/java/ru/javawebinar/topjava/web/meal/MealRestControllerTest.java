@@ -101,4 +101,10 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(getToMatcher(getWithExcess(MEALS, USER.getCaloriesPerDay())));
     }
+
+    @Test
+    void testGetUnAuth() throws Exception {
+        mockMvc.perform(get(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
 }

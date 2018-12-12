@@ -6,9 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealInTo;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.Util;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -33,9 +34,9 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Valid MealTo mealTo, BindingResult result) {
+    public ResponseEntity<String> createOrUpdate(@Valid MealInTo mealTo, BindingResult result) {
         if(result.hasErrors()){
-            return new ResponseEntity<>(Util.validationErrorsToString(result.getFieldErrors()), HttpStatus.UNPROCESSABLE_ENTITY);
+            return ValidationUtil.validationErrorsToResponseEntity(result.getFieldErrors());
         }
         if (mealTo.isNew()) {
             super.create(MealsUtil.createNewFromTo(mealTo));
