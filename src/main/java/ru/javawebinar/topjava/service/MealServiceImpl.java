@@ -53,7 +53,9 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void update(MealInTo mealTo, int userId) {
-        repository.save(MealsUtil.createNewFromTo(mealTo), userId);
+        Meal meal = MealsUtil.createNewFromTo(mealTo);
+        meal.setId(mealTo.getId());
+        repository.save(meal, userId);
     }
 
     @Override
