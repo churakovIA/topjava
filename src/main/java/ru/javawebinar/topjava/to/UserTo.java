@@ -3,10 +3,7 @@ package ru.javawebinar.topjava.to;
 import org.hibernate.validator.constraints.Range;
 import ru.javawebinar.topjava.util.UserUtil;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 public class UserTo extends BaseTo implements Serializable {
@@ -80,4 +77,10 @@ public class UserTo extends BaseTo implements Serializable {
                 ", caloriesPerDay='" + caloriesPerDay + '\'' +
                 '}';
     }
+
+    @AssertTrue(message = "sdvavadvdfv")
+    public boolean test(){
+        return false;
+    }
+
 }

@@ -15,6 +15,8 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+
     @Autowired
     private UserService service;
 
@@ -60,4 +62,13 @@ public abstract class AbstractUserController {
         log.info(enabled ? "enable {}" : "disable {}", id);
         service.enable(id, enabled);
     }
+
+//    @Autowired
+//    UserToValidator validator;
+//
+//    @InitBinder
+//    protected void initBinder(WebDataBinder binder) {
+//        binder.addValidators(validator);
+//    }
+
 }

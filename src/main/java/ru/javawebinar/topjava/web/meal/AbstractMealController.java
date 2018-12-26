@@ -73,4 +73,13 @@ public abstract class AbstractMealController {
                 orElse(startTime, LocalTime.MIN), orElse(endTime, LocalTime.MAX)
         );
     }
+
+//    @Autowired
+//    MealValidator validator;
+//
+//    @InitBinder
+//    protected void initBinder(WebDataBinder binder) {
+//        binder.addValidators(validator);
+//    }
+
 }
