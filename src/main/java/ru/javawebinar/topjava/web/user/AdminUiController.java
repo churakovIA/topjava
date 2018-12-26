@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ajax/admin/users")
-public class AdminAjaxController extends AbstractUserController {
+public class AdminUiController extends AbstractUserController {
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +47,7 @@ public class AdminAjaxController extends AbstractUserController {
         } else {
             super.update(userTo, userTo.getId());
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Override
